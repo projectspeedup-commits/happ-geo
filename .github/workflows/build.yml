@@ -1,0 +1,40 @@
+name: build-geo
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download full Loyalsoldier files
+        run: |
+          mkdir -p full out
+          for f in geoip geosite; do
+            curl -fsSL --retry 3 -o full/$f.dat \
+              https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/$f.dat
+          done
+          ls -l full
+
+      - name: Build lightweight files
+        run: python3 build_geo.py full/geoip.dat full/geosite.dat out
+
+      - name: Sanity check
+        run: |
+          test "$(stat -c %s out/geoip.dat)" -gt 100000
+          test "$(stat -c %s out/geosite.dat)" -gt 20000
+          sha256sum out/*.dat | tee out/sha256.txt
+
+      - name: Publish to release "geo"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view geo >/dev/null 2>&1 || gh release create geo --title geo --notes "Rebuilt daily"
+          gh release upload geo out/geoip.dat out/geosite.dat out/sha256.txt --clobber
