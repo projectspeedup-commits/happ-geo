@@ -9,7 +9,12 @@ only the categories below are kept, entries are copied unchanged.
 - geosite: `category-ru`, `google`, `youtube`, `openai`, `anthropic`, `category-ai-!cn`,
   `deepseek`, `private`, `yandex`, `mailru`, `vk`
 
-Download:
+Download (branch `dist`, preferred):
+
+- https://raw.githubusercontent.com/projectspeedup-commits/happ-geo/dist/geoip.dat
+- https://raw.githubusercontent.com/projectspeedup-commits/happ-geo/dist/geosite.dat
+
+Release `geo`:
 
 - https://github.com/projectspeedup-commits/happ-geo/releases/download/geo/geoip.dat
 - https://github.com/projectspeedup-commits/happ-geo/releases/download/geo/geosite.dat
